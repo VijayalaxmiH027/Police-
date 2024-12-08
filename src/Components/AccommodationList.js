@@ -3,12 +3,11 @@ import Header from './Header';
 import '../Styles/Accommodation.css';
 
 function AccommodationList() {
-  const [activeAccommodations, setActiveAccommodations] = useState([]);
-  const [inactiveAccommodations, setInactiveAccommodations] = useState([]);
+  const [accommodations, setAccommodations] = useState([]);
   const [viewingActive, setViewingActive] = useState(true); // Default view: Active accommodations
 
   useEffect(() => {
-    // Fetch the accommodations based on active or inactive state
+    // Fetch accommodations based on availability status
     fetchAccommodations(viewingActive);
   }, [viewingActive]);
 
@@ -18,12 +17,7 @@ function AccommodationList() {
         `http://localhost:5000/api/accommodations?status=${isActive ? 'active' : 'inactive'}`
       );
       const data = await response.json();
-      console.log('Fetched data:', data); // Debug log
-      if (isActive) {
-        setActiveAccommodations(data);
-      } else {
-        setInactiveAccommodations(data);
-      }
+      setAccommodations(data);
     } catch (error) {
       console.error('Error fetching accommodation data:', error);
     }
@@ -31,6 +25,7 @@ function AccommodationList() {
 
   return (
     <div>
+      <Header />
       <div className="button-container">
         <button
           onClick={() => setViewingActive(true)}
@@ -51,15 +46,21 @@ function AccommodationList() {
           <thead>
             <tr>
               <th>Hotel Name</th>
-              <th>Accommodation Type</th>
+              <th>Room Number</th>
+              <th>Occupied Rooms</th>
+              <th>Available Rooms</th>
+              <th>Total Guests</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {(viewingActive ? activeAccommodations : inactiveAccommodations).map((acc, index) => (
+            {accommodations.map((acc, index) => (
               <tr key={index}>
-                <td>{acc.hotelName}</td>
-                <td>{acc.type}</td>
+                <td>{acc.hotel_name}</td>
+                <td>{acc.room_number}</td>
+                <td>{acc.occupied_rooms}</td>
+                <td>{acc.available_rooms}</td>
+                <td>{acc.total_guests}</td>
                 <td>{acc.status}</td>
               </tr>
             ))}
@@ -71,3 +72,4 @@ function AccommodationList() {
 }
 
 export default AccommodationList;
+
